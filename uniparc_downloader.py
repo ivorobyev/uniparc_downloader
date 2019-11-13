@@ -1,3 +1,6 @@
-import numpy
+import requests
+import pandas as pd
 
-print('hi')
+taxon = 33926
+format_ = 'fasta'
+r = requests.get('https://www.uniprot.org/uniparc/?query=organism:'+str(taxon)+'&format='+format_)
