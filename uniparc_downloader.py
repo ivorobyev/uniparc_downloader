@@ -1,7 +1,20 @@
 import requests
+import argparse
+import urllib
 
-taxon = 33926
-format_ = 'fasta'
-r = requests.get('https://www.uniprot.org/uniparc/?query=organism:'+str(taxon)+'&format='+format_)
-print(r.content)
-print('---')
+parser = argparse.ArgumentParser()
+parser.add_argument('-t', '--taxon', help = 'organism identificator')
+parser.add_argument('-f', '--format', help = 'output format')
+args = parser.parse_args()
+
+base_url = 'https://www.uniprot.org/uniparc/?query=organism:{0}&format={1}'
+
+
+req = base_url.format(args.taxon, args.format)
+print(req)
+with urllib.request.urlopen(req) as f:
+    response = f.read()
+
+for a in response:
+    print (a)
+    print('---')
