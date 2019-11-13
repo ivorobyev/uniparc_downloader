@@ -21,8 +21,8 @@ formats = ['tab', 'fasta']
 if args.format not in formats:
     raise NameError('unknown data format') 
 
+#make url for request
 base_url = 'https://www.uniprot.org/uniparc/?query=organism:{0}&format={1}'
-
 req = base_url.format(args.taxon, args.format)
 
 print('collecting data for taxon-{0} in {1} format'.format(args.taxon, args.format))
