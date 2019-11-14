@@ -14,8 +14,13 @@ if args.format not in formats:
     raise NameError('unknown data format') 
 
 #make url for request
-base_url = 'https://www.uniprot.org/uniparc/?query=organism:{0}&format={1}'
+base_url = 'https://www.uniprot.org/uniparc/?query=organism:{0}&format={1}&columns:Sequence'
 req = base_url.format(args.taxon, args.format)
+
+#print version
+r = requests.head(req)
+print('X-UniProt-Release: ' + r.headers['X-UniProt-Release'])
+print('Last-Modified: ' + r.headers['Last-Modified'])
 
 print('Collecting data for taxon-{0} in {1} format'.format(args.taxon, args.format))
 
