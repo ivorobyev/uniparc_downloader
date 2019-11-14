@@ -2,6 +2,17 @@ import requests
 import argparse
 import time
 
+#terminal color codes
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
 start_time = time.time()
 
 parser = argparse.ArgumentParser()
@@ -11,7 +22,7 @@ args = parser.parse_args()
 
 formats = ['tab', 'fasta']
 if args.format not in formats:
-    raise NameError('\033[91m' + 'ERROR: unknown data format' + '\033[91m') 
+    raise NameError(bcolors.FAIL + 'ERROR: unknown data format' + bcolors.ENDC) 
 
 #make url for request
 base_url = 'https://www.uniprot.org/uniparc/?query=organism:{0}&format={1}&columns:sequence'
@@ -24,7 +35,7 @@ try:
     print('Last Modified: ' + r.headers['Last-Modified'])
     print('Total rows: ' + r.headers['X-Total-Results'])
 except:
-    print('\033[91m' + 'CONNECTION ERROR: server unavailable' + '\033[91m') 
+    print(bcolors.FAIL + 'CONNECTION ERROR: server unavailable' + bcolors.ENDC) 
     exit()
 
 print('Collecting data for taxon-{0} in {1} format'.format(args.taxon, args.format))
@@ -42,10 +53,10 @@ def download_file(url, filename):
                         f.write(chunk)
         print('Download complete')
     except:
-        print('\033[91m' + 'CONNECTION ERROR: server unavailable' + '\033[91m')
+        print(bcolors.FAIL + 'CONNECTION ERROR: server unavailable' + bcolors.ENDC)
         exit()
 
 download_file(req, filename)
     
-print('\033[92m' + 'elapsed_time: ' + str(time.time() - start_time) + '\033[92m')
-print('\033[92m' + 'data saved in file: ' + filename + '\033[92m')
+print(bcolors.OKGREEN  + 'elapsed_time: ' + str(time.time() - start_time) + bcolors.ENDC)
+print(bcolors.OKGREEN + 'data saved in file: ' + filename + bcolors.ENDC)
