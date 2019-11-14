@@ -17,7 +17,7 @@ if args.format not in formats:
 base_url = 'https://www.uniprot.org/uniparc/?query=organism:{0}&format={1}'
 req = base_url.format(args.taxon, args.format)
 
-print('collecting data for taxon-{0} in {1} format'.format(args.taxon, args.format))
+print('Collecting data for taxon-{0} in {1} format'.format(args.taxon, args.format))
 
 #define output filename
 filename = 'uniparc_{0}_{1}_{2}.csv'.format(args.taxon, args.format, time.time())
