@@ -19,7 +19,10 @@ def download_file(url, filename):
         with requests.get(url, stream=True) as r:
             r.raise_for_status()
             with open(filename, 'wb') as f:
+                i = 0
                 for chunk in r.iter_content(chunk_size=8192): 
+                    print(i)
+                    i += 1
                     if chunk:
                         f.write(chunk)
         print('Download complete')
@@ -29,6 +32,7 @@ def download_file(url, filename):
 
 if __name__ == '__main__' :
     print(bcolors.OKBLUE + 'Uniparc downloader runing' + bcolors.ENDC)
+    print(bcolors.OKBLUE + '-------------------------' + bcolors.ENDC)
 
     start_time = time.time()
 
@@ -55,10 +59,16 @@ if __name__ == '__main__' :
         print(bcolors.FAIL + 'CONNECTION ERROR: server unavailable' + bcolors.ENDC) 
         exit()
 
+    if int(r.headers['X-Total-Results']) == 0:
+        print(bcolors.OKGREEN + 'Dataset has no records, nothing to download' + bcolors.ENDC)
+        exit()
+        
     print('Collecting data for taxon-{0} in {1} format'.format(args.taxon, args.format))
 
     #define output filename
-    filename = 'uniparc_{0}_{1}_{2}.csv'.format(args.taxon, args.format, time.time())
+    filename = 'uniparc_{0}_{1}_{2}.csv'.format(args.taxon, 
+                                                args.format, 
+                                                time.strftime("%Y-%m-%d-%H-%M", time.localtime()))
 
     #downloading file
     download_file(req, filename)
