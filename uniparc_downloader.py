@@ -1,6 +1,8 @@
 import requests
 import argparse
 import time
+import os
+import sys
 
 #terminal color codes
 class bcolors:
@@ -13,22 +15,29 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+def progress(count, total, status=''):
+    bar_len = 60
+    filled_len = int(round(bar_len * count / float(total)))
+
+    percents = round(100.0 * count / float(total), 1)
+    bar = '=' * filled_len + '-' * (bar_len - filled_len)
+
+    sys.stdout.write('[%s] %s%s ...%s\r' % (bar, percents, '%', status))
+    sys.stdout.flush()
+
 #function to download file by chunks
-def download_file(url, filename):
-    try:
+def download_file(url, filename, rownumber):
         with requests.get(url, stream=True) as r:
             r.raise_for_status()
             with open(filename, 'wb') as f:
                 i = 0
-                for chunk in r.iter_content(chunk_size=8192): 
-                    print(i)
-                    i += 1
+                complete = 0
+                for chunk in r.iter_content(chunk_size=10000000): 
                     if chunk:
                         f.write(chunk)
+                        complete += len(str(chunk).split('\\n'))
+                        progress(complete, rownumber, status='Downloading')
         print('Download complete')
-    except:
-        print(bcolors.FAIL + 'CONNECTION ERROR: server unavailable' + bcolors.ENDC)
-        exit()
 
 if __name__ == '__main__' :
     print(bcolors.OKBLUE + 'Uniparc downloader runing' + bcolors.ENDC)
@@ -62,7 +71,7 @@ if __name__ == '__main__' :
     if int(r.headers['X-Total-Results']) == 0:
         print(bcolors.OKGREEN + 'Dataset has no records, nothing to download' + bcolors.ENDC)
         exit()
-        
+
     print('Collecting data for taxon-{0} in {1} format'.format(args.taxon, args.format))
 
     #define output filename
@@ -71,7 +80,7 @@ if __name__ == '__main__' :
                                                 time.strftime("%Y-%m-%d-%H-%M", time.localtime()))
 
     #downloading file
-    download_file(req, filename)
+    download_file(req, filename, int(r.headers['X-Total-Results']))
         
     print(bcolors.OKGREEN  + 'elapsed_time: ' + str(time.time() - start_time) + bcolors.ENDC)
     print(bcolors.OKGREEN + 'data saved in file: ' + filename + bcolors.ENDC)
