@@ -74,7 +74,7 @@ if __name__ == '__main__' :
     print('Collecting data for taxon-{0} in {1} format'.format(args.taxon, args.format))
 
     #define output filename
-    filename = 'uniparc_{0}_{1}_{2}.csv'.format(args.taxon, 
+    filename = 'output/uniparc_{0}_{1}_{2}.csv'.format(args.taxon, 
                                                 args.format, 
                                                 time.strftime("%Y-%m-%d-%H-%M", time.localtime()))
 
