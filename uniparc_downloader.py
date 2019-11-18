@@ -30,7 +30,6 @@ def download_file(url, filename, rownumber):
         with requests.get(url, stream=True) as r:
             r.raise_for_status()
             with open(filename, 'wb') as f:
-                i = 0
                 complete = 0
                 for chunk in r.iter_content(chunk_size=10000000): 
                     if chunk:
